@@ -1,86 +1,44 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from pathlib import Path
+
 import joblib
 import pandas as pd
-import os
-import urllib.request
+from huggingface_hub import hf_hub_download
 
 
 # ============================================================
-# PROJECT PATHS
+# PROJECT CONFIGURATION
 # ============================================================
 
 ROOT_DIR = Path(__file__).resolve().parent
 
-LOCAL_MODEL_PATH = (
-    ROOT_DIR
-    / "data"
-    / "processed"
-    / "models"
-    / "random_forest_forecaster.pkl"
-)
-
-# On deployment, MODEL_URL can point to externally hosted model.
-MODEL_URL = os.getenv("MODEL_URL")
+MODEL_REPO = "pragnal7512/foresight-random-forest"
+MODEL_FILE = "random_forest_forecaster.pkl"
 
 
 # ============================================================
-# LOAD MODEL
+# LOAD MODEL FROM HUGGING FACE
 # ============================================================
 
-def load_model():
+print("Loading Random Forest model from Hugging Face...")
 
-    # --------------------------------------------------------
-    # OPTION 1 — Local development
-    # --------------------------------------------------------
-
-    if LOCAL_MODEL_PATH.exists():
-
-        print("Loading local Random Forest model...")
-
-        return joblib.load(LOCAL_MODEL_PATH)
-
-    # --------------------------------------------------------
-    # OPTION 2 — Deployment
-    # --------------------------------------------------------
-
-    if MODEL_URL:
-
-        print("Local model not found.")
-        print("Downloading model from MODEL_URL...")
-
-        deployed_model_path = ROOT_DIR / "random_forest_forecaster.pkl"
-
-        try:
-
-            urllib.request.urlretrieve(
-                MODEL_URL,
-                deployed_model_path
-            )
-
-            print("Model downloaded successfully.")
-
-            return joblib.load(deployed_model_path)
-
-        except Exception as e:
-
-            raise RuntimeError(
-                f"Unable to download/load deployed model: {e}"
-            )
-
-    # --------------------------------------------------------
-    # No model available
-    # --------------------------------------------------------
-
-    raise FileNotFoundError(
-        "Random Forest model was not found. "
-        "Place random_forest_forecaster.pkl at "
-        f"{LOCAL_MODEL_PATH} or configure MODEL_URL."
+try:
+    MODEL_PATH = hf_hub_download(
+        repo_id=MODEL_REPO,
+        filename=MODEL_FILE
     )
 
+    model = joblib.load(MODEL_PATH)
 
-model = load_model()
+    print("Model loaded successfully.")
+    print(f"Model path: {MODEL_PATH}")
+
+except Exception as e:
+    print(f"Failed to load model: {e}")
+    raise RuntimeError(
+        f"Unable to load Random Forest model: {e}"
+    )
 
 
 # ============================================================
@@ -138,20 +96,6 @@ class RiskRequest(BaseModel):
 
 
 # ============================================================
-# HEALTH CHECK
-# ============================================================
-
-@app.get("/health")
-def health():
-
-    return {
-        "status": "healthy",
-        "service": "Project FORESIGHT Scoring Service",
-        "model_loaded": model is not None
-    }
-
-
-# ============================================================
 # ROOT ENDPOINT
 # ============================================================
 
@@ -167,6 +111,20 @@ def root():
 
 
 # ============================================================
+# HEALTH CHECK
+# ============================================================
+
+@app.get("/health")
+def health():
+
+    return {
+        "status": "healthy",
+        "service": "Project FORESIGHT Scoring Service",
+        "model_loaded": model is not None
+    }
+
+
+# ============================================================
 # FORECAST API
 # ============================================================
 
@@ -178,29 +136,19 @@ def predict_forecast(request: ForecastRequest):
         input_data = pd.DataFrame([{
 
             "sell_price": request.sell_price,
-
             "has_event": request.has_event,
-
             "has_snap": request.has_snap,
-
             "is_weekend": request.is_weekend,
-
             "lag_1": request.lag_1,
-
             "lag_2": request.lag_2,
-
             "lag_4": request.lag_4,
-
             "lag_8": request.lag_8,
-
             "rolling_mean_4": request.rolling_mean_4,
-
             "rolling_std_4": request.rolling_std_4
 
         }])
 
         # Ensure exact feature order
-
         input_data = input_data[FEATURES]
 
         prediction = model.predict(input_data)
@@ -236,14 +184,9 @@ def predict_risk(request: RiskRequest):
     if inventory_gap < 0:
 
         risk = "Stockout Risk"
-
         priority = "High"
-
         decision = "Reorder Immediately"
-
-        recommended_action = (
-            "Increase replenishment"
-        )
+        recommended_action = "Increase replenishment"
 
     # --------------------------------------------------------
     # OVERSTOCK RISK
@@ -254,13 +197,8 @@ def predict_risk(request: RiskRequest):
     ):
 
         risk = "Overstock Risk"
-
         priority = "Medium"
-
-        decision = (
-            "Reduce Purchasing / Launch Promotion"
-        )
-
+        decision = "Reduce Purchasing / Launch Promotion"
         recommended_action = (
             "Reduce purchasing or promote stock"
         )
@@ -272,13 +210,8 @@ def predict_risk(request: RiskRequest):
     else:
 
         risk = "Healthy"
-
         priority = "Low"
-
-        decision = (
-            "Maintain Current Inventory"
-        )
-
+        decision = "Maintain Current Inventory"
         recommended_action = (
             "Maintain current inventory"
         )
@@ -286,13 +219,9 @@ def predict_risk(request: RiskRequest):
     return {
 
         "risk": risk,
-
         "priority": priority,
-
         "decision": decision,
-
         "recommended_action": recommended_action,
-
         "inventory_gap": inventory_gap
 
     }
