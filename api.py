@@ -1,9 +1,10 @@
-
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from pathlib import Path
 import joblib
 import pandas as pd
+import os
+import urllib.request
 
 
 # ============================================================
@@ -12,7 +13,7 @@ import pandas as pd
 
 ROOT_DIR = Path(__file__).resolve().parent
 
-MODEL_PATH = (
+LOCAL_MODEL_PATH = (
     ROOT_DIR
     / "data"
     / "processed"
@@ -20,13 +21,71 @@ MODEL_PATH = (
     / "random_forest_forecaster.pkl"
 )
 
+# On deployment, MODEL_URL can point to externally hosted model.
+MODEL_URL = os.getenv("MODEL_URL")
+
 
 # ============================================================
 # LOAD MODEL
 # ============================================================
 
-model = joblib.load(MODEL_PATH)
+def load_model():
 
+    # --------------------------------------------------------
+    # OPTION 1 — Local development
+    # --------------------------------------------------------
+
+    if LOCAL_MODEL_PATH.exists():
+
+        print("Loading local Random Forest model...")
+
+        return joblib.load(LOCAL_MODEL_PATH)
+
+    # --------------------------------------------------------
+    # OPTION 2 — Deployment
+    # --------------------------------------------------------
+
+    if MODEL_URL:
+
+        print("Local model not found.")
+        print("Downloading model from MODEL_URL...")
+
+        deployed_model_path = ROOT_DIR / "random_forest_forecaster.pkl"
+
+        try:
+
+            urllib.request.urlretrieve(
+                MODEL_URL,
+                deployed_model_path
+            )
+
+            print("Model downloaded successfully.")
+
+            return joblib.load(deployed_model_path)
+
+        except Exception as e:
+
+            raise RuntimeError(
+                f"Unable to download/load deployed model: {e}"
+            )
+
+    # --------------------------------------------------------
+    # No model available
+    # --------------------------------------------------------
+
+    raise FileNotFoundError(
+        "Random Forest model was not found. "
+        "Place random_forest_forecaster.pkl at "
+        f"{LOCAL_MODEL_PATH} or configure MODEL_URL."
+    )
+
+
+model = load_model()
+
+
+# ============================================================
+# MODEL FEATURES
+# ============================================================
 
 FEATURES = [
     "sell_price",
@@ -88,7 +147,22 @@ def health():
     return {
         "status": "healthy",
         "service": "Project FORESIGHT Scoring Service",
-        "model_loaded": True
+        "model_loaded": model is not None
+    }
+
+
+# ============================================================
+# ROOT ENDPOINT
+# ============================================================
+
+@app.get("/")
+def root():
+
+    return {
+        "service": "Project FORESIGHT Scoring Service",
+        "status": "online",
+        "docs": "/docs",
+        "health": "/health"
     }
 
 
@@ -102,17 +176,30 @@ def predict_forecast(request: ForecastRequest):
     try:
 
         input_data = pd.DataFrame([{
+
             "sell_price": request.sell_price,
+
             "has_event": request.has_event,
+
             "has_snap": request.has_snap,
+
             "is_weekend": request.is_weekend,
+
             "lag_1": request.lag_1,
+
             "lag_2": request.lag_2,
+
             "lag_4": request.lag_4,
+
             "lag_8": request.lag_8,
+
             "rolling_mean_4": request.rolling_mean_4,
+
             "rolling_std_4": request.rolling_std_4
+
         }])
+
+        # Ensure exact feature order
 
         input_data = input_data[FEATURES]
 
@@ -142,29 +229,56 @@ def predict_risk(request: RiskRequest):
         - request.safety_stock
     )
 
+    # --------------------------------------------------------
+    # STOCKOUT RISK
+    # --------------------------------------------------------
+
     if inventory_gap < 0:
 
         risk = "Stockout Risk"
+
         priority = "High"
+
         decision = "Reorder Immediately"
-        recommended_action = "Increase replenishment"
+
+        recommended_action = (
+            "Increase replenishment"
+        )
+
+    # --------------------------------------------------------
+    # OVERSTOCK RISK
+    # --------------------------------------------------------
 
     elif request.estimated_inventory > (
         request.forecast * 1.5
     ):
 
         risk = "Overstock Risk"
+
         priority = "Medium"
-        decision = "Reduce Purchasing / Launch Promotion"
+
+        decision = (
+            "Reduce Purchasing / Launch Promotion"
+        )
+
         recommended_action = (
             "Reduce purchasing or promote stock"
         )
 
+    # --------------------------------------------------------
+    # HEALTHY
+    # --------------------------------------------------------
+
     else:
 
         risk = "Healthy"
+
         priority = "Low"
-        decision = "Maintain Current Inventory"
+
+        decision = (
+            "Maintain Current Inventory"
+        )
+
         recommended_action = (
             "Maintain current inventory"
         )
@@ -172,9 +286,13 @@ def predict_risk(request: RiskRequest):
     return {
 
         "risk": risk,
+
         "priority": priority,
+
         "decision": decision,
+
         "recommended_action": recommended_action,
+
         "inventory_gap": inventory_gap
 
     }
