@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.env
+
+# Large datasets
+*.csv
+*.parquet
+
+# Model files
+*.pkl
+
+# Jupyter temporary files
+.ipynb_checkpoints/
