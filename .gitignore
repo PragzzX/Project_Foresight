@@ -4,9 +4,18 @@ __pycache__/
 .ipynb_checkpoints/
 .env
 
+# Local/generated data
+data/
+
 # Large datasets
 *.csv
 *.parquet
+
+# Model files
+*.pkl
+
+# Local/generated data
+data/
 
 # Model files
 *.pkl
