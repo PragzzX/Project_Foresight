@@ -20,7 +20,7 @@ st.set_page_config(
 ROOT_DIR = Path(__file__).resolve().parents[2]
 
 FORECAST_PATH = ROOT_DIR / "data" / "processed" / "weekly_forecasts.parquet"
-RISK_PATH = ROOT_DIR / "outputs" / "risk_scoring_results.csv"
+RISK_PATH = ROOT_DIR / "data" / "processed" / "risk_scoring.parquet"
 
 # ============================================================
 # Load Data
@@ -29,7 +29,7 @@ RISK_PATH = ROOT_DIR / "outputs" / "risk_scoring_results.csv"
 @st.cache_data
 def load_data():
     forecast = pd.read_parquet(FORECAST_PATH)
-    risk = pd.read_csv(RISK_PATH)
+    risk = pd.read_parquet(RISK_PATH)
     return forecast, risk
 
 forecast_df, risk_df = load_data()

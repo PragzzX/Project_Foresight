@@ -19,7 +19,7 @@ st.set_page_config(
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 
-RISK_PATH = ROOT_DIR / "outputs" / "risk_scoring_results.csv"
+RISK_PATH = ROOT_DIR / "data" / "processed" / "risk_scoring.parquet"
 
 SUMMARY_PATH = ROOT_DIR / "outputs" / "decision_summary.csv"
 
@@ -29,7 +29,7 @@ SUMMARY_PATH = ROOT_DIR / "outputs" / "decision_summary.csv"
 
 @st.cache_data
 def load_data():
-    risk = pd.read_csv(RISK_PATH)
+    risk = pd.read_parquet(RISK_PATH)
     summary = pd.read_csv(SUMMARY_PATH)
     return risk, summary
 
