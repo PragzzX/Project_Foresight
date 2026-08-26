@@ -1,0 +1,4 @@
+risk,priority,decision,sku_count,sales_at_risk,locked_capital
+Healthy,Low,Maintain Current Inventory,583764,0.0,0.0
+Overstock Risk,Medium,Reduce Purchasing / Launch Promotion,593552,0.0,9475885.407550031
+Stockout Risk,High,Reorder Immediately,853318,4505995.3646568535,0.0
