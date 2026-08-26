@@ -3,1001 +3,710 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Project Foresight</title>
+    <title>Project FORESIGHT | AI-Powered Demand & Inventory Intelligence</title>
+    
+    <!-- Modern Inter & JetBrains Mono Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #60a5fa;
+            --accent: #0ea5e9;
+            --bg-body: #0b0f19;
+            --bg-card: #111827;
+            --bg-card-hover: #1f2937;
+            --border-color: #1f2937;
+            --border-focus: #374151;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --text-dim: #6b7280;
+            --danger: #ef4444;
+            --danger-bg: rgba(239, 68, 68, 0.12);
+            --warning: #f59e0b;
+            --warning-bg: rgba(245, 158, 11, 0.12);
+            --success: #10b981;
+            --success-bg: rgba(16, 185, 129, 0.12);
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', Consolas, monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: Arial, Helvetica, sans-serif;
-            line-height: 1.7;
-            color: #24292f;
-            max-width: 1100px;
-            margin: auto;
-            padding: 40px;
-            background: #ffffff;
+            font-family: var(--font-main);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.65;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
         }
 
-        h1 {
-            color: #174a7e;
-            font-size: 42px;
-            margin-bottom: 5px;
+        .container {
+            max-width: 1180px;
+            width: 100%;
         }
 
-        h2 {
-            color: #174a7e;
-            border-bottom: 2px solid #e5e7eb;
-            padding-bottom: 8px;
-            margin-top: 45px;
-        }
-
-        h3 {
-            color: #2563eb;
-            margin-top: 30px;
-        }
-
-        .subtitle {
-            font-size: 20px;
-            color: #666;
-            margin-bottom: 25px;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 5px 12px;
-            margin: 4px;
-            border-radius: 15px;
-            background: #eef4fb;
-            color: #174a7e;
-            font-size: 13px;
-        }
-
+        /* Hero Banner */
         .hero {
-            background: linear-gradient(135deg, #174a7e, #2563eb);
-            color: white;
-            padding: 35px;
-            border-radius: 14px;
-            margin-bottom: 35px;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.2) 0%, rgba(14, 165, 233, 0.05) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 20px;
+            padding: 50px 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+            margin-bottom: 40px;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.25) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 30px;
+            background: rgba(37, 99, 235, 0.15);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            color: var(--primary-light);
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 20px;
         }
 
         .hero h1 {
-            color: white;
+            font-size: 42px;
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1.2;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
         }
 
-        .hero p {
+        .hero p.lead {
             font-size: 18px;
+            color: var(--text-muted);
+            max-width: 800px;
+            margin-bottom: 25px;
         }
 
-        .card-container {
+        .hero-links {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
-            margin: 25px 0;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #ffffff;
+            border: 1px solid var(--primary-light);
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--text-muted);
+            transform: translateY(-2px);
+        }
+
+        /* Section Typography */
+        h2.section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 50px 0 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        h3.subsection-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-light);
+            margin: 25px 0 12px 0;
+        }
+
+        p {
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            font-size: 15px;
+        }
+
+        /* Metric Grid Cards */
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 20px;
+            margin: 24px 0;
         }
 
         .card {
-            flex: 1;
-            min-width: 210px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 24px;
+            transition: transform 0.2s, border-color 0.2s;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: var(--border-focus);
+        }
+
+        .card-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 6px;
+        }
+
+        .card-value {
+            font-size: 30px;
+            font-weight: 800;
+            color: #ffffff;
+            font-family: var(--font-mono);
+            margin-bottom: 6px;
+        }
+
+        .card-subtext {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* Status Panels */
+        .status-panel {
+            border-radius: 12px;
             padding: 20px;
-            border: 1px solid #e1e4e8;
-            border-radius: 10px;
-            background: #f8fafc;
+            margin: 16px 0;
+            border-left: 4px solid transparent;
         }
 
-        .card h3 {
-            margin-top: 0;
+        .status-danger {
+            background: var(--danger-bg);
+            border-color: var(--danger);
         }
 
-        .metric {
-            font-size: 27px;
-            font-weight: bold;
-            color: #174a7e;
+        .status-warning {
+            background: var(--warning-bg);
+            border-color: var(--warning);
         }
 
-        .success {
-            border-left: 5px solid #16a34a;
-            padding: 15px 20px;
-            background: #f0fdf4;
+        .status-success {
+            background: var(--success-bg);
+            border-color: var(--success);
         }
 
-        .warning {
-            border-left: 5px solid #f59e0b;
-            padding: 15px 20px;
-            background: #fffbeb;
+        .status-panel h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
         }
 
-        .danger {
-            border-left: 5px solid #dc2626;
-            padding: 15px 20px;
-            background: #fef2f2;
+        .status-danger h4 { color: var(--danger); }
+        .status-warning h4 { color: var(--warning); }
+        .status-success h4 { color: var(--success); }
+
+        .status-panel ul {
+            padding-left: 20px;
+            color: var(--text-main);
+            font-size: 14px;
         }
 
-        pre {
-            background: #0f172a;
-            color: #e2e8f0;
-            padding: 20px;
-            border-radius: 10px;
+        .status-panel ul li {
+            margin-bottom: 6px;
+        }
+
+        /* Visual Screenshot Wrapper Slots */
+        .screenshot-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            overflow: hidden;
+            margin: 24px 0;
+        }
+
+        .screenshot-img-container {
+            width: 100%;
+            max-height: 480px;
+            overflow: hidden;
+            background: #000000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .screenshot-img-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        .screenshot-caption {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.2);
+            font-size: 13.5px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        .screenshot-caption strong {
+            color: var(--primary-light);
+        }
+
+        /* Clean Tables */
+        .table-responsive {
             overflow-x: auto;
-        }
-
-        code {
-            font-family: Consolas, Monaco, monospace;
+            margin: 20px 0;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
+            text-align: left;
+            font-size: 14px;
         }
 
         th {
-            background: #174a7e;
-            color: white;
-            text-align: left;
-            padding: 12px;
+            background: #1e293b;
+            color: var(--text-main);
+            padding: 14px 18px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
         }
 
         td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-muted);
         }
 
-        tr:nth-child(even) {
-            background: #f8fafc;
+        tr:last-child td {
+            border-bottom: none;
         }
 
-        a {
-            color: #2563eb;
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--text-main);
+        }
+
+        /* Code and Pre blocks */
+        pre {
+            background: #090d16;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 18px;
+            overflow-x: auto;
+            font-family: var(--font-mono);
+            font-size: 13.5px;
+            color: #38bdf8;
+            line-height: 1.5;
+            margin: 16px 0;
+        }
+
+        code {
+            font-family: var(--font-mono);
+            color: var(--primary-light);
+            background: rgba(37, 99, 235, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 13.5px;
+        }
+
+        /* Tags */
+        .badge-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 16px 0;
+        }
+
+        .tech-badge {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 500;
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: #1e293b;
+            color: #93c5fd;
+            border: 1px solid #334155;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-dim);
+            font-size: 13.5px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .footer a {
+            color: var(--text-muted);
             text-decoration: none;
         }
 
-        a:hover {
-            text-decoration: underline;
-        }
-
-        .footer {
-            margin-top: 60px;
-            padding-top: 25px;
-            border-top: 2px solid #e5e7eb;
-            color: #666;
+        .footer a:hover {
+            color: var(--primary-light);
         }
     </style>
 </head>
-
 <body>
 
-<!-- ================= HERO ================= -->
+<div class="container">
 
-<div class="hero">
-
-    <h1>🔮 Project Foresight</h1>
-
-    <p>
-        <strong>
-            AI-Powered Retail Demand Forecasting & Inventory Risk
-            Intelligence Platform
-        </strong>
-    </p>
-
-    <p>
-        An end-to-end data analytics and machine learning platform
-        designed to transform historical retail sales data into
-        demand forecasts, inventory risk insights and
-        decision-support intelligence.
-    </p>
-
-</div>
-
-
-<!-- ================= PROJECT OVERVIEW ================= -->
-
-<h2>📌 Project Overview</h2>
-
-<p>
-    <strong>Project Foresight</strong> is an end-to-end retail analytics
-    and machine learning project focused on two major business problems:
-</p>
-
-<div class="card-container">
-
-    <div class="card">
-        <h3>📈 Demand Forecasting</h3>
-
-        <p>
-            Predicting future product demand using historical
-            sales patterns and engineered predictive features.
+    <!-- ================= HERO ================= -->
+    <header class="hero">
+        <div class="hero-badge">AI Demand & Inventory Intelligence</div>
+        <h1>Project FORESIGHT</h1>
+        <p class="lead">
+            An enterprise-scale retail forecasting engine and inventory decision platform. Transforms over 58 million daily transaction records into weekly demand forecasts, risk scoring classifications, and actionable working capital controls.
         </p>
-    </div>
+        <div class="hero-links">
+            <a href="https://pragzzx-project-foresight-dashboardapp-jaxeze.streamlit.app/" target="_blank" class="btn btn-primary">
+                🚀 Open Live Streamlit App
+            </a>
+            <a href="https://github.com/PragzzX/Project_Foresight" target="_blank" class="btn btn-secondary">
+                📂 GitHub Repository
+            </a>
+        </div>
+    </header>
 
-    <div class="card">
-        <h3>⚠️ Inventory Risk Intelligence</h3>
+    <!-- ================= EXECUTIVE KPI SUMMARY ================= -->
+    <section>
+        <h2 class="section-title">📊 Executive Scorecard & Headline Results</h2>
+        <div class="grid-4">
+            <div class="card">
+                <div class="card-label">Random Forest WAPE</div>
+                <div class="card-value" style="color: #38bdf8;">59.05%</div>
+                <div class="card-subtext">vs. 71.41% Seasonal Naive baseline</div>
+            </div>
+            <div class="card">
+                <div class="card-label">Accuracy Improvement</div>
+                <div class="card-value" style="color: #10b981;">+17.3%</div>
+                <div class="card-subtext">12.36 pp net error reduction</div>
+            </div>
+            <div class="card">
+                <div class="card-label">Stockout Sales at Risk</div>
+                <div class="card-value" style="color: #ef4444;">₹4.50M</div>
+                <div class="card-subtext">853,318 SKU-weeks requiring reorders</div>
+            </div>
+            <div class="card">
+                <div class="card-label">Locked Capital (Overstock)</div>
+                <div class="card-value" style="color: #f59e0b;">₹9.47M</div>
+                <div class="card-subtext">593,552 SKU-weeks requiring markdowns</div>
+            </div>
+        </div>
 
+        <!-- Integrated Screenshot Slot: Executive Summary -->
+        <div class="screenshot-card">
+            <div class="screenshot-img-container">
+                <img src="1000051778.jpg" alt="Executive Summary Dashboard">
+            </div>
+            <div class="screenshot-caption">
+                <strong>Figure 1.1:</strong> Executive Summary Dashboard synthesizing actual vs forecast units (5,223,487 vs 5,667,654), model performance comparison, and portfolio risk distributions.
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= PROBLEM STATEMENT ================= -->
+    <section>
+        <h2 class="section-title">🎯 Operational Challenges & Business Value</h2>
         <p>
-            Identifying products exposed to stockout and
-            overstock risks and estimating their business impact.
+            Retail inventory planning balances two costly conditions: under-forecasting that causes stockouts, and over-forecasting that ties up working capital. Project FORESIGHT bridges the gap between predictive ML models and inventory decision-making.
         </p>
-    </div>
 
-</div>
-
-<p>
-    The project combines data engineering, exploratory data analysis,
-    feature engineering, machine learning, forecasting, risk scoring
-    and interactive visualization into a unified decision-support
-    platform.
-</p>
-
-
-<!-- ================= BUSINESS PROBLEM ================= -->
-
-<h2>🎯 Business Problem</h2>
-
-<p>
-    Retail organizations need to maintain sufficient inventory to
-    satisfy customer demand while avoiding unnecessary excess stock.
-</p>
-
-<div class="danger">
-
-    <h3>🔴 Stockout Risk</h3>
-
-    <ul>
-        <li>Lost sales</li>
-        <li>Unmet customer demand</li>
-        <li>Reduced customer satisfaction</li>
-        <li>Potential revenue loss</li>
-    </ul>
-
-</div>
-
-<div class="warning">
-
-    <h3>🟠 Overstock Risk</h3>
-
-    <ul>
-        <li>Capital locked in inventory</li>
-        <li>Higher storage costs</li>
-        <li>Lower inventory turnover</li>
-        <li>Operational inefficiency</li>
-    </ul>
-
-</div>
-
-<p>
-    Project Foresight addresses these challenges by connecting
-    demand forecasting with inventory risk analysis.
-</p>
-
-
-<!-- ================= OBJECTIVES ================= -->
-
-<h2>🚀 Project Objectives</h2>
-
-<ul>
-    <li>Analyze historical retail sales data.</li>
-    <li>Identify sales and demand patterns.</li>
-    <li>Perform data validation and transformation.</li>
-    <li>Engineer predictive features.</li>
-    <li>Develop machine-learning-based demand forecasting.</li>
-    <li>Evaluate forecasting performance using WAPE.</li>
-    <li>Generate demand forecasts.</li>
-    <li>Classify inventory into risk categories.</li>
-    <li>Identify stockout and overstock-prone products.</li>
-    <li>Estimate financial exposure.</li>
-    <li>Develop interactive business dashboards.</li>
-    <li>Provide decision-support insights.</li>
-</ul>
-
-
-<!-- ================= ARCHITECTURE ================= -->
-
-<h2>🏗️ Solution Architecture</h2>
-
-<pre><code>
-                    ┌──────────────────────┐
-                    │   Historical Sales   │
-                    │        Data          │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │ Data Validation &    │
-                    │ Data Preparation     │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │ Exploratory Data     │
-                    │ Analysis             │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │ Feature Engineering  │
-                    └──────────┬───────────┘
-                               │
-                ┌──────────────┴──────────────┐
-                ▼                             ▼
-      ┌───────────────────┐        ┌────────────────────┐
-      │ Demand Forecasting│        │ Inventory Risk     │
-      │ Models            │        │ Scoring             │
-      └─────────┬─────────┘        └──────────┬─────────┘
-                │                             │
-                ▼                             ▼
-      ┌───────────────────┐        ┌────────────────────┐
-      │ Forecast Results  │        │ Risk Classification│
-      └─────────┬─────────┘        └──────────┬─────────┘
-                │                             │
-                └──────────────┬──────────────┘
-                               ▼
-                    ┌──────────────────────┐
-                    │ Business KPIs &      │
-                    │ Decision Intelligence│
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │ Streamlit Dashboard  │
-                    └──────────────────────┘
-</code></pre>
-
-
-<!-- ================= WORKFLOW ================= -->
-
-<h2>📊 Analytical Workflow</h2>
-
-<h3>1. Data Engineering & Validation</h3>
-
-<p>
-    The first stage prepares the source data for analytics and
-    machine learning.
-</p>
-
-<ul>
-    <li>Data loading</li>
-    <li>Data validation</li>
-    <li>Data cleaning</li>
-    <li>Data transformation</li>
-    <li>Data merging</li>
-    <li>Preparation of processed datasets</li>
-</ul>
-
-<pre><code>
-src/
-└── data/
-    ├── load_data.py
-    ├── validate_data.py
-    ├── transform_data.py
-    └── merge_data.py
-</code></pre>
-
-
-<h3>2. Exploratory Data Analysis</h3>
-
-<p>
-    Exploratory analysis was performed to understand historical
-    sales and demand behaviour.
-</p>
-
-<ul>
-    <li>Sales trends</li>
-    <li>Demand patterns</li>
-    <li>Store-level behaviour</li>
-    <li>Product-level behaviour</li>
-    <li>Temporal patterns</li>
-    <li>Sales distributions</li>
-</ul>
-
-
-<h3>3. Feature Engineering</h3>
-
-<p>
-    Historical sales information was transformed into predictive
-    features suitable for forecasting.
-</p>
-
-<pre><code>
-03_Feature_Engineering.ipynb
-</code></pre>
-
-
-<h3>4. Demand Forecasting</h3>
-
-<p>
-    The forecasting component estimates expected future demand
-    from historical sales and engineered features.
-</p>
-
-<pre><code>
-Historical Sales
-       ↓
-Feature Engineering
-       ↓
-Training Dataset
-       ↓
-Forecasting Model
-       ↓
-Model Evaluation
-       ↓
-Demand Forecast
-</code></pre>
-
-
-<!-- ================= MODEL ================= -->
-
-<h2>🤖 Machine Learning</h2>
-
-<h3>Random Forest Forecasting</h3>
-
-<p>
-    A Random Forest-based approach is used within the forecasting
-    pipeline to model relationships between engineered variables
-    and demand.
-</p>
-
-<p>
-    The model is evaluated using <strong>WAPE
-    (Weighted Absolute Percentage Error)</strong>.
-</p>
-
-<div class="card-container">
-
-    <div class="card">
-        <h3>Forecast Units</h3>
-        <div class="metric">5,667,654</div>
-    </div>
-
-    <div class="card">
-        <h3>Actual Units</h3>
-        <div class="metric">5,223,487</div>
-    </div>
-
-    <div class="card">
-        <h3>Random Forest WAPE</h3>
-        <div class="metric">0.5905</div>
-    </div>
-
-    <div class="card">
-        <h3>Improvement</h3>
-        <div class="metric">17.3%</div>
-    </div>
-
-</div>
-
-
-<!-- ================= RISK SCORING ================= -->
-
-<h2>⚠️ Inventory Risk Scoring</h2>
-
-<p>
-    The inventory risk engine classifies products according to
-    their inventory condition and potential operational risk.
-</p>
-
-<div class="card-container">
-
-    <div class="card">
-        <h3>🟢 Healthy</h3>
-        <p>Inventory considered to be within a healthy range.</p>
-    </div>
-
-    <div class="card">
-        <h3>🟠 Overstock Risk</h3>
-        <p>Products associated with excess inventory exposure.</p>
-    </div>
-
-    <div class="card">
-        <h3>🔴 Stockout Risk</h3>
-        <p>Products exposed to insufficient inventory risk.</p>
-    </div>
-
-</div>
-
-<pre><code>
-05_risk_scoring.ipynb
-</code></pre>
-
-
-<!-- ================= INVENTORY METRICS ================= -->
-
-<h2>📦 Inventory Intelligence</h2>
-
-<table>
-
-    <tr>
-        <th>Metric</th>
-        <th>Value</th>
-    </tr>
-
-    <tr>
-        <td>Products Analysed</td>
-        <td>2,030,634</td>
-    </tr>
-
-    <tr>
-        <td>Healthy Inventory</td>
-        <td>583,764</td>
-    </tr>
-
-    <tr>
-        <td>Stockout Risk</td>
-        <td>853,318</td>
-    </tr>
-
-    <tr>
-        <td>Overstock Risk</td>
-        <td>593,552</td>
-    </tr>
-
-    <tr>
-        <td>Healthy Inventory Rate</td>
-        <td>28.7%</td>
-    </tr>
-
-</table>
-
-
-<!-- ================= FINANCIAL ================= -->
-
-<h2>💰 Financial Impact Analysis</h2>
-
-<p>
-    Project Foresight extends inventory classification into
-    financial decision support by providing indicators related
-    to sales exposure and capital locked in inventory.
-</p>
-
-<table>
-
-    <tr>
-        <th>Financial Metric</th>
-        <th>Value</th>
-    </tr>
-
-    <tr>
-        <td>Sales at Risk</td>
-        <td>₹4,505,995</td>
-    </tr>
-
-    <tr>
-        <td>Locked Capital</td>
-        <td>₹9,475,885</td>
-    </tr>
-
-</table>
-
-
-<!-- ================= DASHBOARD ================= -->
-
-<h2>📊 Interactive Streamlit Dashboard</h2>
-
-<p>
-    The final analytics layer is implemented as an interactive
-    Streamlit dashboard that converts analytical outputs into
-    business-friendly visualizations and KPIs.
-</p>
-
-<h3>Dashboard Modules</h3>
-
-<ul>
-    <li>Sales Analytics</li>
-    <li>Demand Forecast</li>
-    <li>Inventory Dashboard</li>
-    <li>Risk Dashboard</li>
-    <li>Product Details</li>
-    <li>Executive Summary</li>
-</ul>
-
-
-<h3>📈 Demand Forecast Dashboard</h3>
-
-<ul>
-    <li>Forecast units</li>
-    <li>Actual units</li>
-    <li>Random Forest WAPE</li>
-    <li>Forecast improvement</li>
-    <li>Actual vs Forecast visualization</li>
-    <li>Forecast distribution</li>
-    <li>Store filtering</li>
-    <li>Year filtering</li>
-</ul>
-
-
-<h3>⚠️ Inventory Risk Dashboard</h3>
-
-<ul>
-    <li>Stockout risk</li>
-    <li>Overstock risk</li>
-    <li>Sales at risk</li>
-    <li>Locked capital</li>
-    <li>Risk distribution</li>
-    <li>SKU count by risk</li>
-    <li>Financial impact analysis</li>
-</ul>
-
-
-<h3>📋 Executive Summary</h3>
-
-<p>
-    The Executive Summary consolidates the major forecasting,
-    inventory and financial KPIs into a single management-oriented
-    view.
-</p>
-
-
-<!-- ================= NOTEBOOKS ================= -->
-
-<h2>📚 Notebook Pipeline</h2>
-
-<pre><code>
-notebooks/
-
-01_Data_Engineering_Validation.ipynb
-        ↓
-02_Exploratory_Data_Analysis.ipynb
-        ↓
-03_Feature_Engineering.ipynb
-        ↓
-04_Demand_Forecasting.ipynb
-        ↓
-05_Risk_Scoring.ipynb
-        ↓
-06_Planning_Dashboard.ipynb
-        ↓
-07_Deployed_Scoring_Service.ipynb
-        ↓
-08_Executive_Readout.ipynb
-</code></pre>
-
-
-<!-- ================= STRUCTURE ================= -->
-
-<h2>🗂️ Project Structure</h2>
-
-<pre><code>
-Project_Foresight/
-│
-├── notebooks/
-│   ├── 01_Data_Engineering_Validation.ipynb
-│   ├── 02_Exploratory_Data_Analysis.ipynb
-│   ├── 03_Feature_Engineering.ipynb
-│   ├── 04_Demand_Forecasting.ipynb
-│   ├── 05_Risk_Scoring.ipynb
-│   ├── 06_Planning_Dashboard.ipynb
-│   ├── 07_Deployed_Scoring_Service.ipynb
-│   └── 08_Executive_Readout.ipynb
-│
-├── dashboard/
-│   └── app.py
-│
-├── src/
-│   ├── data/
-│   │   ├── load_data.py
-│   │   ├── validate_data.py
-│   │   ├── transform_data.py
-│   │   └── merge_data.py
-│   │
-│   └── utils/
-│       ├── config.py
-│       ├── helpers.py
-│       ├── logger.py
-│       └── pipeline.py
-│
-├── outputs/
-│   ├── decision_summary.csv
-│   └── risk_scoring_results.csv
-│
-├── data/
-│   ├── interim/
-│   └── processed/
-│
-├── reports/
-├── requirements.txt
-├── README.md
-├── LICENSE
-└── Procfile
-</code></pre>
-
-
-<!-- ================= TECHNOLOGY ================= -->
-
-<h2>🛠️ Technology Stack</h2>
-
-<p>
-
-<span class="badge">Python</span>
-<span class="badge">Pandas</span>
-<span class="badge">NumPy</span>
-<span class="badge">Scikit-learn</span>
-<span class="badge">Jupyter</span>
-<span class="badge">Plotly</span>
-<span class="badge">Streamlit</span>
-<span class="badge">Git</span>
-<span class="badge">GitHub</span>
-
-</p>
-
-<h3>Analytics & Data Engineering</h3>
-
-<ul>
-    <li>Python</li>
-    <li>Pandas</li>
-    <li>NumPy</li>
-    <li>Data validation</li>
-    <li>Data transformation</li>
-    <li>Feature engineering</li>
-</ul>
-
-<h3>Machine Learning</h3>
-
-<ul>
-    <li>Random Forest</li>
-    <li>Demand forecasting</li>
-    <li>Risk scoring</li>
-    <li>WAPE model evaluation</li>
-</ul>
-
-<h3>Visualization & BI</h3>
-
-<ul>
-    <li>Plotly</li>
-    <li>Plotly Express</li>
-    <li>Streamlit</li>
-</ul>
-
-
-<!-- ================= WAPE ================= -->
-
-<h2>📏 Forecast Evaluation</h2>
-
-<p>
-    Weighted Absolute Percentage Error (WAPE) is used to evaluate
-    forecasting performance.
-</p>
-
-<pre><code>
-              Σ |Actual - Forecast|
-WAPE = -------------------------------
-                    Σ |Actual|
-</code></pre>
-
-<p>
-    Lower WAPE indicates better forecasting performance.
-</p>
-
-<p>
-    The current dashboard reports a Random Forest WAPE of
-    <strong>0.5905</strong>.
-</p>
-
-
-<!-- ================= BUSINESS INSIGHTS ================= -->
-
-<h2>💡 Key Business Insights</h2>
-
-<div class="success">
-
-    <strong>Inventory Health:</strong>
-
-    <p>
-        28.7% of analysed products are currently classified
-        as healthy inventory.
-    </p>
-
-</div>
-
-<div class="danger">
-
-    <strong>Stockout Risk:</strong>
-
-    <p>
-        853,318 products are classified under stockout risk,
-        making it the largest risk category in the current
-        dashboard output.
-    </p>
-
-</div>
-
-<div class="warning">
-
-    <strong>Overstock Risk:</strong>
-
-    <p>
-        593,552 products are classified under overstock risk.
-    </p>
-
-</div>
-
-<p>
-    Overall, 1,446,870 products are identified as being
-    at risk across the stockout and overstock categories.
-</p>
-
-
-<!-- ================= DECISION SUPPORT ================= -->
-
-<h2>🎯 Decision Intelligence</h2>
-
-<pre><code>
-What happened?
-      ↓
-Historical Sales Analytics
-      ↓
-What is likely to happen?
-      ↓
-Demand Forecasting
-      ↓
-Where is the inventory problem?
-      ↓
-Risk Scoring
-      ↓
-What is the financial impact?
-      ↓
-Sales-at-Risk / Locked-Capital Analysis
-      ↓
-What should be prioritized?
-      ↓
-Interactive Decision Dashboard
-</code></pre>
-
-
-<!-- ================= RUN ================= -->
-
-<h2>▶️ Running the Project Locally</h2>
-
-<h3>1. Clone the Repository</h3>
-
-<pre><code>
+        <div class="grid-2">
+            <div class="status-panel status-danger">
+                <h4>🔴 Under-Forecasting & Stockout Exposure</h4>
+                <ul>
+                    <li>Loss of top-line revenue and customer goodwill.</li>
+                    <li>Unfulfilled demand across high-velocity items.</li>
+                    <li>853,318 SKU-weeks flagged with high stockout probability.</li>
+                    <li><strong>Financial Impact:</strong> ₹4,505,995 in sales at risk.</li>
+                </ul>
+            </div>
+
+            <div class="status-panel status-warning">
+                <h4>🟠 Over-Forecasting & Excess Working Capital</h4>
+                <ul>
+                    <li>Excess storage and warehouse holding costs.</li>
+                    <li>Forced markdown cycles and margin degradation.</li>
+                    <li>593,552 SKU-weeks classified as overstocked.</li>
+                    <li><strong>Financial Impact:</strong> ₹9,475,885 in locked capital.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= DATA ARCHITECTURE & CHUNKING ================= -->
+    <section>
+        <h2 class="section-title">🏗️ Data Engineering & 64-Chunk Architecture</h2>
+        <p>
+            Standard pandas workflows fail on the 58.3M record M5 dataset due to memory limits. FORESIGHT implements a chunked transformation pipeline that creates weekly SKU-store modeling records stored as compressed Parquet files.
+        </p>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Pipeline Stage</th>
+                        <th>Record Grain</th>
+                        <th>Volume / Dimensions</th>
+                        <th>Processing Strategy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Daily Sales Matrix</strong></td>
+                        <td>SKU × Store × Day</td>
+                        <td>30,490 × 1,919 matrix</td>
+                        <td>Wide unpivot via 64 memory-bounded chunks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Calendar Context</strong></td>
+                        <td>Daily Timeline</td>
+                        <td>1,969 dates × 14 attributes</td>
+                        <td>SNAP indicators, events, and weekend flags</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sell Prices</strong></td>
+                        <td>SKU × Store × Week</td>
+                        <td>6,841,121 records × 4 attributes</td>
+                        <td>Store-level pricing joins with null checks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Merged Analytical Master</strong></td>
+                        <td>Long Transactional</td>
+                        <td>58,327,370 rows × 22 columns</td>
+                        <td>Snappy-compressed Parquet storage</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Weekly Modeling Grain</strong></td>
+                        <td>SKU × Store × Week</td>
+                        <td>10,153,170 rows</td>
+                        <td>Lag and shifted rolling feature extraction</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ================= FORECASTING RESULTS ================= -->
+    <section>
+        <h2 class="section-title">🤖 Model Performance & Feature Importance</h2>
+        <p>
+            Models were trained using an 80/20 chronological train/test split (8,122,536 training rows / 2,030,634 test rows) to eliminate future data leakage. The Random Forest model achieved a 59.05% WAPE, outperforming the Seasonal Naive baseline (71.41%).
+        </p>
+
+        <!-- Integrated Screenshot Slot: Forecast Time Series -->
+        <div class="screenshot-card">
+            <div class="screenshot-img-container">
+                <img src="1000051777.jpg" alt="Demand Forecast Dashboard">
+            </div>
+            <div class="screenshot-caption">
+                <strong>Figure 2.1:</strong> Demand Forecast Dashboard depicting actual vs predicted unit sales across historical test horizons with store and year filtering.
+            </div>
+        </div>
+
+        <h3 class="subsection-title">Feature Importance Analysis</h3>
+        <p>
+            Feature importance analysis demonstrates that recent four-week demand levels serve as the dominant predictive signal:
+        </p>
+
+        <pre><code>rolling_mean_4  ████████████████████████████████████████ 70.51%
+lag_1           ███████ 13.45%
+is_weekend      ███ 6.41%
+rolling_std_4   ██ 3.11%
+lag_8           █ 1.67%
+lag_2           █ 1.50%
+sell_price      █ 1.26%
+lag_4           █ 1.25%
+has_event       ▎ 0.52%
+has_snap        ▎ 0.31%</code></pre>
+    </section>
+
+    <!-- ================= INVENTORY INTELLIGENCE ================= -->
+    <section>
+        <h2 class="section-title">⚠️ Inventory Intelligence & Risk Quantification</h2>
+        <p>
+            The risk engine translates weekly unit forecasts into operational inventory states using deterministic replenishment logic:
+        </p>
+
+        <div class="grid-2">
+            <!-- Integrated Screenshot Slot: Snapshot -->
+            <div class="screenshot-card">
+                <div class="screenshot-img-container">
+                    <img src="1000051776.jpg" alt="Intelligence Snapshot">
+                </div>
+                <div class="screenshot-caption">
+                    <strong>Figure 3.1:</strong> Portfolio Health Index (28.7% Healthy) and dominant stockout exposure breakdown.
+                </div>
+            </div>
+
+            <!-- Integrated Screenshot Slot: Risk Details -->
+            <div class="screenshot-card">
+                <div class="screenshot-img-container">
+                    <img src="1000051779.jpg" alt="Inventory Risk Dashboard">
+                </div>
+                <div class="screenshot-caption">
+                    <strong>Figure 3.2:</strong> Inventory Risk Dashboard quantifying ₹4.50M in sales at risk and ₹9.47M in locked capital.
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Risk Priority</th>
+                        <th>Classification Criteria</th>
+                        <th>Evaluated SKUs</th>
+                        <th>Share</th>
+                        <th>Financial Impact</th>
+                        <th>Operational Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span style="color: #ef4444; font-weight:700;">Stockout (High)</span></td>
+                        <td><code>Gap &lt; 0</code></td>
+                        <td>853,318</td>
+                        <td>42.0%</td>
+                        <td>₹4,505,995 Sales at Risk</td>
+                        <td>Trigger urgent purchase reorder</td>
+                    </tr>
+                    <tr>
+                        <td><span style="color: #f59e0b; font-weight:700;">Overstock (Medium)</span></td>
+                        <td><code>Gap &gt; 0.50 × Forecast</code></td>
+                        <td>593,552</td>
+                        <td>29.2%</td>
+                        <td>₹9,475,885 Locked Capital</td>
+                        <td>Halt POs & trigger markdowns</td>
+                    </tr>
+                    <tr>
+                        <td><span style="color: #10b981; font-weight:700;">Healthy (Low)</span></td>
+                        <td><code>0 ≤ Gap ≤ 0.50 × Forecast</code></td>
+                        <td>583,764</td>
+                        <td>28.7%</td>
+                        <td>₹0 Excess Exposure</td>
+                        <td>Maintain current replenishment</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ================= RUNNING LOCALLY ================= -->
+    <section>
+        <h2 class="section-title">▶️ Setup and Local Execution</h2>
+        <pre><code># 1. Clone the project repository
 git clone https://github.com/PragzzX/Project_Foresight.git
 cd Project_Foresight
-</code></pre>
 
-<h3>2. Create a Virtual Environment</h3>
-
-<pre><code>
+# 2. Configure virtual environment
 python -m venv .venv
-</code></pre>
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
-<h3>3. Activate the Environment</h3>
-
-<pre><code>
-.venv\Scripts\activate
-</code></pre>
-
-<h3>4. Install Dependencies</h3>
-
-<pre><code>
+# 3. Install dependencies
 pip install -r requirements.txt
-</code></pre>
 
-<h3>5. Start the Dashboard</h3>
+# 4. Launch the Streamlit multi-page dashboard
+streamlit run dashboard/app.py</code></pre>
+    </section>
 
-<pre><code>
-streamlit run dashboard/app.py
-</code></pre>
+    <!-- ================= TECH STACK BADGES ================= -->
+    <section>
+        <h2 class="section-title">🛠️ Core Technologies & Tools</h2>
+        <div class="badge-list">
+            <span class="tech-badge">Python 3.10+</span>
+            <span class="tech-badge">Pandas</span>
+            <span class="tech-badge">NumPy</span>
+            <span class="tech-badge">PyArrow</span>
+            <span class="tech-badge">Scikit-Learn</span>
+            <span class="tech-badge">Random Forest</span>
+            <span class="tech-badge">Joblib</span>
+            <span class="tech-badge">Streamlit</span>
+            <span class="tech-badge">Power BI</span>
+            <span class="tech-badge">Parquet</span>
+            <span class="tech-badge">Plotly</span>
+        </div>
+    </section>
 
-
-<!-- ================= FUTURE ================= -->
-
-<h2>🚀 Future Enhancements</h2>
-
-<ul>
-    <li>Automated model retraining</li>
-    <li>Real-time inventory integration</li>
-    <li>Automated data pipelines</li>
-    <li>Product-level reorder recommendations</li>
-    <li>Safety-stock optimization</li>
-    <li>Forecast confidence intervals</li>
-    <li>Model monitoring</li>
-    <li>Data-quality monitoring</li>
-    <li>Automated high-risk inventory alerts</li>
-    <li>Cloud data warehouse integration</li>
-</ul>
-
-
-<!-- ================= AUTHOR ================= -->
-
-<h2>👩‍💻 Author</h2>
-
-<div class="card">
-
-    <h3>L Pragna</h3>
-
-    <p>
-        <strong>Project:</strong>
-        Project Foresight
-    </p>
-
-    <p>
-        <strong>Focus:</strong>
-        Data Analytics • Machine Learning • Demand Forecasting •
-        Inventory Intelligence
-    </p>
-
-    <p>
-        <strong>GitHub Repository:</strong><br>
-
-        <a href="https://github.com/PragzzX/Project_Foresight"
-           target="_blank">
-            github.com/PragzzX/Project_Foresight
-        </a>
-    </p>
-
-</div>
-
-
-<!-- ================= SUMMARY ================= -->
-
-<h2>📄 Project Summary</h2>
-
-<p>
-    <strong>Project Foresight</strong> demonstrates an end-to-end
-    approach to solving a retail analytics problem using data
-    engineering, exploratory analytics, machine learning,
-    demand forecasting, inventory risk scoring and interactive
-    business intelligence.
-</p>
-
-<p>
-    The platform connects:
-</p>
-
-<pre><code>
-Data
-  ↓
-Features
-  ↓
-Forecasts
-  ↓
-Risk Scores
-  ↓
-Financial Impact
-  ↓
-Business Decisions
-</code></pre>
-
-
-<!-- ================= SKILLS ================= -->
-
-<h2>⭐ Skills Demonstrated</h2>
-
-<p>
-
-<span class="badge">Python</span>
-<span class="badge">Data Cleaning</span>
-<span class="badge">Data Validation</span>
-<span class="badge">EDA</span>
-<span class="badge">Feature Engineering</span>
-<span class="badge">Machine Learning</span>
-<span class="badge">Random Forest</span>
-<span class="badge">Demand Forecasting</span>
-<span class="badge">WAPE</span>
-<span class="badge">Risk Scoring</span>
-<span class="badge">Business KPIs</span>
-<span class="badge">Financial Analysis</span>
-<span class="badge">Plotly</span>
-<span class="badge">Streamlit</span>
-<span class="badge">Jupyter</span>
-<span class="badge">Git</span>
-<span class="badge">GitHub</span>
-<span class="badge">Dashboard Development</span>
-<span class="badge">Decision Intelligence</span>
-
-</p>
-
-
-<!-- ================= FOOTER ================= -->
-
-<div class="footer">
-
-    <p>
-        <strong>Project Foresight</strong> —
-        AI-Powered Retail Demand Forecasting &
-        Inventory Risk Intelligence Platform
-    </p>
-
-    <p>
-        Developed by <strong>L Pragna</strong>
-    </p>
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer">
+        <div>
+            <strong>Project FORESIGHT</strong> — Developed by <strong>L Pragna</strong>
+        </div>
+        <div>
+            <a href="https://github.com/PragzzX/Project_Foresight" target="_blank">GitHub Repository</a> • 
+            <a href="https://pragzzx-project-foresight-dashboardapp-jaxeze.streamlit.app/" target="_blank">Live Application</a>
+        </div>
+    </footer>
 
 </div>
 
