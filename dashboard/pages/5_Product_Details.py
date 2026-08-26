@@ -27,21 +27,19 @@ PROCESSED_DIR = ROOT_DIR / "data" / "processed"
 # LOAD DATA
 # ============================================================
 
+# Product Details only uses risk_scoring.parquet.
+# weekly_forecasts.parquet is not needed on this page.
 @st.cache_data(show_spinner=False)
 def load_data():
-
-    forecast = pd.read_parquet(
-        PROCESSED_DIR / "weekly_forecasts.parquet"
-    )
 
     risk = pd.read_parquet(
         PROCESSED_DIR / "risk_scoring.parquet"
     )
 
-    return forecast, risk
+    return risk
 
 
-forecast_df, risk_df = load_data()
+risk_df = load_data()
 
 # ============================================================
 # PREMIUM CSS
@@ -124,12 +122,10 @@ store = st.sidebar.selectbox(
 )
 
 product_list = sorted(
-
     risk_df.loc[
         risk_df.store_id == store,
         "item_id"
     ].unique()
-
 )
 
 sku = st.sidebar.selectbox(
@@ -143,13 +139,10 @@ product_df = risk_df[
 ].copy()
 
 week = st.sidebar.selectbox(
-
     "Week",
-
     sorted(
         product_df.week_of_year.unique()
     )
-
 )
 
 selected = product_df[
@@ -160,7 +153,7 @@ selected = product_df[
 # KPI SECTION
 # ============================================================
 
-c1,c2,c3,c4,c5 = st.columns(5)
+c1, c2, c3, c4, c5 = st.columns(5)
 
 c1.metric(
     "Forecast",
@@ -216,7 +209,7 @@ elif selected.risk == "Overstock Risk":
         f"""
 <div class="risk-medium">
 
-⚠ OVERSTOCK RISK
+⚠️ OVERSTOCK RISK
 
 <br><br>
 
@@ -255,33 +248,24 @@ history = product_df.sort_values(
 )
 
 fig = px.line(
-
     history,
-
     x="week_of_year",
-
     y=[
         "units_sold",
         "rf_forecast"
     ],
-
     markers=True,
-
     title="Weekly Actual Sales vs Forecast"
-
 )
 
 fig.update_layout(
-
     height=450,
-
     legend_title=""
-
 )
 
 st.plotly_chart(
     fig,
-    use_container_width=True
+    width="stretch"
 )
 
 # ============================================================
@@ -291,52 +275,34 @@ st.plotly_chart(
 inventory = go.Figure()
 
 inventory.add_trace(
-
     go.Bar(
-
         x=history.week_of_year,
-
         y=history.estimated_inventory,
-
         name="Inventory"
-
     )
-
 )
 
 inventory.add_trace(
-
     go.Scatter(
-
         x=history.week_of_year,
-
         y=history.safety_stock,
-
         mode="lines+markers",
-
         name="Safety Stock"
-
     )
-
 )
 
 inventory.update_layout(
-
     title="Inventory vs Safety Stock",
-
     height=450
-
 )
 
 st.plotly_chart(
-
     inventory,
-
-    use_container_width=True
-
+    width="stretch"
 )
 
 st.divider()
+
 # ============================================================
 # INVENTORY GAP ANALYSIS
 # ============================================================
@@ -372,7 +338,7 @@ with gap_col1:
 
     st.plotly_chart(
         gap_fig,
-        use_container_width=True
+        width="stretch"
     )
 
 with gap_col2:
@@ -385,7 +351,8 @@ with gap_col2:
     if selected.inventory_gap < 0:
 
         st.error(
-            "Inventory below safety stock.\n\nImmediate replenishment recommended."
+            "Inventory below safety stock.\n\n"
+            "Immediate replenishment recommended."
         )
 
     elif selected.inventory_gap > 0:
@@ -475,7 +442,7 @@ st.subheader("📦 Product Summary")
 
 summary = pd.DataFrame({
 
-    "Metric":[
+    "Metric": [
         "Store",
         "Product",
         "Week",
@@ -489,15 +456,15 @@ summary = pd.DataFrame({
         "Decision"
     ],
 
-    "Value":[
+    "Value": [
         selected.store_id,
         selected.item_id,
         selected.week_of_year,
-        round(selected.rf_forecast,2),
-        round(selected.units_sold,2),
-        round(selected.estimated_inventory,2),
-        round(selected.safety_stock,2),
-        round(selected.inventory_gap,2),
+        round(selected.rf_forecast, 2),
+        round(selected.units_sold, 2),
+        round(selected.estimated_inventory, 2),
+        round(selected.safety_stock, 2),
+        round(selected.inventory_gap, 2),
         selected.risk,
         selected.priority,
         selected.decision
@@ -507,7 +474,7 @@ summary = pd.DataFrame({
 
 st.dataframe(
     summary,
-    use_container_width=True,
+    width="stretch",
     hide_index=True
 )
 
@@ -517,18 +484,15 @@ st.dataframe(
 
 st.divider()
 
-csv = product_df.to_csv(index=False).encode("utf-8")
+csv = product_df.to_csv(
+    index=False
+).encode("utf-8")
 
 st.download_button(
-
     "⬇ Download Product Report",
-
     csv,
-
     file_name=f"{sku}_report.csv",
-
     mime="text/csv"
-
 )
 
 # ============================================================
@@ -540,7 +504,6 @@ st.divider()
 st.subheader("📋 Complete Weekly History")
 
 display_cols = [
-
     "week_of_year",
     "units_sold",
     "rf_forecast",
@@ -549,18 +512,13 @@ display_cols = [
     "inventory_gap",
     "risk",
     "priority"
-
 ]
 
 st.dataframe(
-
     product_df[display_cols]
     .sort_values("week_of_year"),
-
-    use_container_width=True,
-
+    width="stretch",
     hide_index=True
-
 )
 
 # ============================================================
